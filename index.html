@@ -10,9 +10,9 @@
     </style>
   </head>
   <body>
-    <a-scene background="color: #000000" vr-mode-ui="enabled: false">
+    <a-scene background="color: #000000" vr-mode-ui="enabled: false" renderer="antialias: true; colorManagement: true;">
       <a-sky color="#000000"></a-sky>
-      <a-entity light="type: ambient; intensity: 0.5"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.6"></a-entity>
       
       <a-entity position="0 2 25">
         <a-camera look-controls="enabled: true" wasd-controls="enabled: true"></a-camera>
@@ -57,36 +57,48 @@
         const grupo = document.createElement('a-entity');
         grupo.setAttribute('position', `${x} ${y} -150`); 
 
-        // 1. ESTRELLA (Luz de referencia)
+        // 1. ESTRELLA
         const esfera = document.createElement('a-sphere');
         esfera.setAttribute('radius', '0.15');
         esfera.setAttribute('color', colorAzar);
         esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 5`);
 
-        // 2. EL TEXTO DEFINITIVO (Relleno negro + Borde blanco + Glow de color)
-        // Usamos una sola capa para evitar que las letras se borren entre sí
-        const texto = document.createElement('a-text');
-        texto.setAttribute('value', palabra);
-        texto.setAttribute('align', 'center');
-        texto.setAttribute('position', '0 2.5 0');
-        texto.setAttribute('scale', '16 16 16');
-        
-        // CONFIGURACIÓN DE COLOR E INTERIOR
-        texto.setAttribute('color', '#000000'); // INTERIOR NEGRO
-        texto.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
-        texto.setAttribute('shader', 'msdf');
-        texto.setAttribute('negate', 'false');
-        
-        // BORDE BLANCO GRUESO (Para que la letra se vea hueca y nítida)
-        texto.setAttribute('outline-width', '0.15');
-        texto.setAttribute('outline-color', '#FFFFFF');
+        // 2. TEXTO BASE (El borde blanco nítido)
+        const borde = document.createElement('a-text');
+        borde.setAttribute('value', palabra);
+        borde.setAttribute('align', 'center');
+        borde.setAttribute('position', '0 2.5 -0.05'); // Un toque atrás
+        borde.setAttribute('scale', '16.2 16.2 16.2'); // Apenas más grande
+        borde.setAttribute('color', '#FFFFFF'); // BLANCO
+        borde.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
+        borde.setAttribute('shader', 'msdf');
+        borde.setAttribute('negate', 'false');
 
-        // RESPLANDOR EXTERIOR (Añadimos sombra de color para el efecto neón)
-        // Esto crea el efecto de color sin ensuciar el interior negro
-        texto.setAttribute('anchor', 'center');
+        // 3. TEXTO FRONTAL (El interior negro puro)
+        const interior = document.createElement('a-text');
+        interior.setAttribute('value', palabra);
+        interior.setAttribute('align', 'center');
+        interior.setAttribute('position', '0 2.5 0'); // Al frente
+        interior.setAttribute('scale', '16 16 16');
+        interior.setAttribute('color', '#000000'); // NEGRO PURO
+        interior.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
+        interior.setAttribute('shader', 'msdf');
+        interior.setAttribute('negate', 'false');
+
+        // 4. EL GLOW (Resplandor de color al fondo)
+        const glow = document.createElement('a-text');
+        glow.setAttribute('value', palabra);
+        glow.setAttribute('align', 'center');
+        glow.setAttribute('position', '0 2.5 -0.15');
+        glow.setAttribute('scale', '17 17 17');
+        glow.setAttribute('color', colorAzar);
+        glow.setAttribute('shader', 'msdf');
+        glow.setAttribute('negate', 'false');
 
         grupo.appendChild(esfera);
-        grupo.appendChild(texto);
+        grupo.appendChild(glow);
+        grupo.appendChild(borde);
+        grupo.appendChild(interior);
         universo.appendChild(grupo);
 
         grupo.setAttribute('animation', {
