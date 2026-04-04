@@ -13,7 +13,7 @@
       <a-sky color="#000000"></a-sky>
 
       <a-entity light="type: ambient; intensity: 0.4"></a-entity>
-      <a-entity light="type: point; intensity: 1; position: 0 10 5"></a-entity>
+      <a-entity light="type: point; intensity: 1.2; position: 0 10 5"></a-entity>
 
       <a-entity position="0 2 15">
         <a-camera look-controls="enabled: false" wasd-controls="enabled: false"></a-camera>
@@ -49,7 +49,7 @@
       function crearEstrella(palabra) {
         const universo = document.querySelector('#universo');
         
-        // Colores de alta visibilidad
+        // Paleta de colores de alta visibilidad
         const colores = ['#00f2ff', '#ff00ff', '#00ffaa', '#ffcc00', '#ffffff'];
         const colorAzar = colores[Math.floor(Math.random() * colores.length)];
 
@@ -66,7 +66,7 @@
         esfera.setAttribute('color', '#fff');
         esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 10`);
 
-        // 2. BORDE DE COLOR (Brillo difuso detrás)
+        // 2. CAPA DE COLOR (Borde/Resplandor detrás)
         const borde = document.createElement('a-text');
         borde.setAttribute('value', palabra);
         borde.setAttribute('align', 'center');
@@ -78,7 +78,7 @@
         borde.setAttribute('negate', 'false');
         borde.setAttribute('opacity', '0.8');
 
-        // 3. TEXTO PRINCIPAL (Blanco puro al frente para legibilidad)
+        // 3. CAPA BLANCA (Texto principal al frente para lectura)
         const textoPrincipal = document.createElement('a-text');
         textoPrincipal.setAttribute('value', palabra);
         textoPrincipal.setAttribute('align', 'center');
@@ -98,7 +98,7 @@
         grupo.setAttribute('animation', {
           property: 'position',
           to: `${x} ${y} ${z}`,
-          dur: 8000,
+          dur: 8500,
           easing: 'easeOutExpo'
         });
       }
