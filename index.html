@@ -12,7 +12,7 @@
   <body>
     <a-scene background="color: #000000" vr-mode-ui="enabled: false">
       <a-sky color="#000000"></a-sky>
-      <a-entity light="type: ambient; intensity: 0.4"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.3"></a-entity>
       
       <a-entity position="0 2 25">
         <a-camera look-controls="enabled: true" wasd-controls="enabled: true"></a-camera>
@@ -41,7 +41,7 @@
             }
           });
         } catch (error) {
-          console.error("Error en la conexión:", error);
+          console.error("Error estelar:", error);
         }
       }
 
@@ -63,35 +63,48 @@
         esfera.setAttribute('color', colorAzar);
         esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 6`);
 
-        // 2. TEXTO CON RELLENO NEGRO Y CONTORNO BLANCO
-        const texto = document.createElement('a-text');
-        texto.setAttribute('value', palabra);
-        texto.setAttribute('align', 'center');
-        texto.setAttribute('position', '0 2 0');
-        texto.setAttribute('scale', '15 15 15');
-        
-        // --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
-        texto.setAttribute('color', '#000000'); // RELLENO NEGRO (Adentro)
-        texto.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
-        texto.setAttribute('shader', 'msdf');
-        texto.setAttribute('negate', 'false');
-        
-        // Creamos el borde blanco para que la letra se defina
-        texto.setAttribute('outline-width', '0.1'); 
-        texto.setAttribute('outline-color', '#FFFFFF'); // BORDE BLANCO (Afuera)
-
-        // 3. RESPLANDOR DE COLOR (Más atrás para que no ensucie el negro)
+        // 2. RESPLANDOR DE COLOR (Glow muy al fondo)
         const glow = document.createElement('a-text');
         glow.setAttribute('value', palabra);
         glow.setAttribute('align', 'center');
-        glow.setAttribute('position', '0 2 -0.15');
+        glow.setAttribute('position', '0 2 -0.2');
         glow.setAttribute('scale', '16 16 16');
         glow.setAttribute('color', colorAzar);
         glow.setAttribute('shader', 'msdf');
         glow.setAttribute('negate', 'false');
 
+        // 3. TEXTO DE LECTURA (Relleno Negro y Contorno Blanco)
+        const texto = document.createElement('a-text');
+        texto.setAttribute('value', palabra);
+        texto.setAttribute('align', 'center');
+        texto.setAttribute('position', '0 2 0');
+        texto.setAttribute('scale', '15 15 15');
+        texto.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
+        texto.setAttribute('shader', 'msdf');
+        texto.setAttribute('negate', 'false');
+        
+        // --- AQUÍ ESTÁ EL CAMBIO CLAVE SOLICITADO ---
+        
+        // Relleno NEGRO para que el centro no emita luz
+        texto.setAttribute('color', '#000000'); 
+        
+        // Borde BLANCO nítido para definir la forma
+        texto.setAttribute('outline-width', '0.1'); 
+        texto.setAttribute('outline-color', '#FFFFFF'); 
+        
+        // 4. BARRERA NEGRA INTERMEDIA (Técnica de recorte para separar las letras)
+        const recorteNegro = document.createElement('a-text');
+        recorteNegro.setAttribute('value', palabra);
+        recorteNegro.setAttribute('align', 'center');
+        recorteNegro.setAttribute('position', '0 2 -0.1');
+        recorteNegro.setAttribute('scale', '15.5 15.5 15.5');
+        recorteNegro.setAttribute('color', '#000000');
+        recorteNegro.setAttribute('shader', 'msdf');
+        recorteNegro.setAttribute('negate', 'false');
+
         grupo.appendChild(esfera);
         grupo.appendChild(glow);
+        grupo.appendChild(recorteNegro); // Añadimos la barrera negra
         grupo.appendChild(texto);
         universo.appendChild(grupo);
 
