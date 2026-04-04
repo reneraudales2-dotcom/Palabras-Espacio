@@ -43,39 +43,59 @@
         }
       }
 
-      function crearEstrella(palabra) {
-        const universo = document.querySelector('#universo');
-        const x = (Math.random() - 0.5) * 40;
-        const y = (Math.random() * 15) - 2;
-        const z = (Math.random() - 0.5) * 15;
+     function crearEstrella(palabra) {
+  const universo = document.querySelector('#universo');
+  
+  // Paleta de colores espaciales de alto contraste
+  const colores = ['#00f2ff', '#ff00ff', '#00ffaa', '#ffcc00', '#ffffff'];
+  const colorAzar = colores[Math.floor(Math.random() * colores.length)];
 
-        const grupo = document.createElement('a-entity');
-        grupo.setAttribute('position', `${x} ${y} -80`); 
+  const x = (Math.random() - 0.5) * 45;
+  const y = (Math.random() * 18) - 2;
+  const z = (Math.random() - 0.5) * 12;
 
-        const esfera = document.createElement('a-sphere');
-        esfera.setAttribute('radius', '0.2');
-        esfera.setAttribute('color', '#fff');
-        esfera.setAttribute('material', 'emissive: #00f2ff; emissiveIntensity: 5');
+  const grupo = document.createElement('a-entity');
+  grupo.setAttribute('position', `${x} ${y} -85`); 
 
-        const texto = document.createElement('a-text');
-        texto.setAttribute('value', palabra);
-        texto.setAttribute('align', 'center');
-        texto.setAttribute('position', '0 1.2 0');
-        texto.setAttribute('scale', '7 7 7'); 
-        texto.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
+  // Esfera con brillo intenso (Emissive)
+  const esfera = document.createElement('a-sphere');
+  esfera.setAttribute('radius', '0.18');
+  esfera.setAttribute('color', '#fff');
+  esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 8`);
 
-        grupo.appendChild(esfera);
-        grupo.appendChild(texto);
-        universo.appendChild(grupo);
+  // Texto en Alta Definición (MSDF)
+  const texto = document.createElement('a-text');
+  texto.setAttribute('value', palabra);
+  texto.setAttribute('align', 'center');
+  texto.setAttribute('position', '0 1.3 0');
+  texto.setAttribute('scale', '9 9 9'); // Tamaño aumentado para legibilidad
+  texto.setAttribute('color', colorAzar);
+  texto.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
+  texto.setAttribute('shader', 'msdf');
+  texto.setAttribute('negate', 'false');
 
-        grupo.setAttribute('animation', {
-          property: 'position',
-          to: `${x} ${y} ${z}`,
-          dur: 7000,
-          easing: 'easeOutExpo'
-        });
-      }
+  // Segunda capa de texto para efecto de resplandor (Glow)
+  const resplandor = document.createElement('a-text');
+  resplandor.setAttribute('value', palabra);
+  resplandor.setAttribute('align', 'center');
+  resplandor.setAttribute('position', '0 1.3 -0.02');
+  resplandor.setAttribute('scale', '9.5 9.5 9.5');
+  resplandor.setAttribute('color', colorAzar);
+  resplandor.setAttribute('opacity', '0.3');
 
+  grupo.appendChild(esfera);
+  grupo.appendChild(texto);
+  grupo.appendChild(resplandor);
+  universo.appendChild(grupo);
+
+  // Animación suave de entrada
+  grupo.setAttribute('animation', {
+    property: 'position',
+    to: `${x} ${y} ${z}`,
+    dur: 7500,
+    easing: 'easeOutQuart'
+  });
+}
       setInterval(actualizarEstrellas, 5000);
     </script>
   </body>
