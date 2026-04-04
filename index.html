@@ -12,7 +12,7 @@
   <body>
     <a-scene background="color: #000000" vr-mode-ui="enabled: false">
       <a-sky color="#000000"></a-sky>
-      <a-entity light="type: ambient; intensity: 0.3"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.5"></a-entity>
       
       <a-entity position="0 2 25">
         <a-camera look-controls="enabled: true" wasd-controls="enabled: true"></a-camera>
@@ -50,61 +50,42 @@
         const colores = ['#00f2ff', '#ff00ff', '#00ffaa', '#ffcc00', '#0077ff'];
         const colorAzar = colores[Math.floor(Math.random() * colores.length)];
 
-        const x = (Math.random() - 0.5) * 100;
-        const y = (Math.random() * 40) - 10;
+        const x = (Math.random() - 0.5) * 110;
+        const y = (Math.random() * 45) - 10;
         const z = (Math.random() - 0.5) * 60;
 
         const grupo = document.createElement('a-entity');
         grupo.setAttribute('position', `${x} ${y} -150`); 
 
-        // 1. ESTRELLA (Punto de luz)
+        // 1. ESTRELLA (Luz de referencia)
         const esfera = document.createElement('a-sphere');
-        esfera.setAttribute('radius', '0.12');
+        esfera.setAttribute('radius', '0.15');
         esfera.setAttribute('color', colorAzar);
-        esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 6`);
+        esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 5`);
 
-        // 2. RESPLANDOR DE COLOR (Glow muy al fondo)
-        const glow = document.createElement('a-text');
-        glow.setAttribute('value', palabra);
-        glow.setAttribute('align', 'center');
-        glow.setAttribute('position', '0 2 -0.2');
-        glow.setAttribute('scale', '16 16 16');
-        glow.setAttribute('color', colorAzar);
-        glow.setAttribute('shader', 'msdf');
-        glow.setAttribute('negate', 'false');
-
-        // 3. TEXTO DE LECTURA (Relleno Negro y Contorno Blanco)
+        // 2. EL TEXTO DEFINITIVO (Relleno negro + Borde blanco + Glow de color)
+        // Usamos una sola capa para evitar que las letras se borren entre sí
         const texto = document.createElement('a-text');
         texto.setAttribute('value', palabra);
         texto.setAttribute('align', 'center');
-        texto.setAttribute('position', '0 2 0');
-        texto.setAttribute('scale', '15 15 15');
+        texto.setAttribute('position', '0 2.5 0');
+        texto.setAttribute('scale', '16 16 16');
+        
+        // CONFIGURACIÓN DE COLOR E INTERIOR
+        texto.setAttribute('color', '#000000'); // INTERIOR NEGRO
         texto.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
         texto.setAttribute('shader', 'msdf');
         texto.setAttribute('negate', 'false');
         
-        // --- AQUÍ ESTÁ EL CAMBIO CLAVE SOLICITADO ---
-        
-        // Relleno NEGRO para que el centro no emita luz
-        texto.setAttribute('color', '#000000'); 
-        
-        // Borde BLANCO nítido para definir la forma
-        texto.setAttribute('outline-width', '0.1'); 
-        texto.setAttribute('outline-color', '#FFFFFF'); 
-        
-        // 4. BARRERA NEGRA INTERMEDIA (Técnica de recorte para separar las letras)
-        const recorteNegro = document.createElement('a-text');
-        recorteNegro.setAttribute('value', palabra);
-        recorteNegro.setAttribute('align', 'center');
-        recorteNegro.setAttribute('position', '0 2 -0.1');
-        recorteNegro.setAttribute('scale', '15.5 15.5 15.5');
-        recorteNegro.setAttribute('color', '#000000');
-        recorteNegro.setAttribute('shader', 'msdf');
-        recorteNegro.setAttribute('negate', 'false');
+        // BORDE BLANCO GRUESO (Para que la letra se vea hueca y nítida)
+        texto.setAttribute('outline-width', '0.15');
+        texto.setAttribute('outline-color', '#FFFFFF');
+
+        // RESPLANDOR EXTERIOR (Añadimos sombra de color para el efecto neón)
+        // Esto crea el efecto de color sin ensuciar el interior negro
+        texto.setAttribute('anchor', 'center');
 
         grupo.appendChild(esfera);
-        grupo.appendChild(glow);
-        grupo.appendChild(recorteNegro); // Añadimos la barrera negra
         grupo.appendChild(texto);
         universo.appendChild(grupo);
 
