@@ -12,10 +12,10 @@
     <a-scene background="color: #000000" vr-mode-ui="enabled: false">
       <a-sky color="#000000"></a-sky>
       
-      <a-entity light="type: ambient; intensity: 0.3"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.2"></a-entity>
       
       <a-entity position="0 2 25">
-        <a-camera look-controls="enabled: true" wasd-controls="enabled: true"></a-camera>
+        <a-camera look-controls="enabled: true; pointerLockEnabled: false" wasd-controls="enabled: true"></a-camera>
       </a-entity>
 
       <a-entity id="universo"></a-entity>
@@ -50,30 +50,31 @@
         const colores = ['#00f2ff', '#ff00ff', '#00ffaa', '#ffcc00', '#0077ff'];
         const colorAzar = colores[Math.floor(Math.random() * colores.length)];
 
-        const x = (Math.random() - 0.5) * 65;
-        const y = (Math.random() * 25) - 5;
-        const z = (Math.random() - 0.5) * 20;
+        // Dispersión amplia para que el mouse tenga utilidad
+        const x = (Math.random() - 0.5) * 85;
+        const y = (Math.random() * 35) - 5;
+        const z = (Math.random() - 0.5) * 40;
 
         const grupo = document.createElement('a-entity');
-        grupo.setAttribute('position', `${x} ${y} -110`); 
+        grupo.setAttribute('position', `${x} ${y} -120`); 
 
-        // 1. Núcleo de la estrella
+        // 1. Estrella guía
         const esfera = document.createElement('a-sphere');
-        esfera.setAttribute('radius', '0.12');
+        esfera.setAttribute('radius', '0.1');
         esfera.setAttribute('color', '#fff');
         esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 10`);
 
-        // 2. Capa de Brillo (Glow trasero)
+        // 2. Resplandor Neón (Fondo)
         const brillo = document.createElement('a-text');
         brillo.setAttribute('value', palabra);
         brillo.setAttribute('align', 'center');
-        brillo.setAttribute('position', '0 1.6 -0.1');
-        brillo.setAttribute('scale', '11 11 11'); 
+        brillo.setAttribute('position', '0 1.6 -0.2');
+        brillo.setAttribute('scale', '11.5 11.5 11.5'); 
         brillo.setAttribute('color', colorAzar);
         brillo.setAttribute('shader', 'msdf');
         brillo.setAttribute('negate', 'false');
 
-        // 3. CAPA DE LECTURA (Blanco con Borde Negro Grueso)
+        // 3. TEXTO DE LECTURA (Blanco con Borde Negro de Contención)
         const texto = document.createElement('a-text');
         texto.setAttribute('value', palabra);
         texto.setAttribute('align', 'center');
@@ -84,10 +85,9 @@
         texto.setAttribute('shader', 'msdf');
         texto.setAttribute('negate', 'false');
         
-        // Propiedades de contorno negro para separar las letras
-        texto.setAttribute('wrap-count', '20');
-        texto.setAttribute('outline-width', '0.15'); // Grosor del borde negro
-        texto.setAttribute('outline-color', '#000000'); // Color negro sólido
+        // BORDE NEGRO: Define la silueta y evita que las letras se peguen
+        texto.setAttribute('outline-width', '0.25'); 
+        texto.setAttribute('outline-color', '#000000'); 
 
         grupo.appendChild(esfera);
         grupo.appendChild(brillo);
@@ -97,7 +97,7 @@
         grupo.setAttribute('animation', {
           property: 'position',
           to: `${x} ${y} ${z}`,
-          dur: 10000,
+          dur: 11000,
           easing: 'easeOutExpo'
         });
       }
