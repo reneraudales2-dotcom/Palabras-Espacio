@@ -9,11 +9,10 @@
     </style>
   </head>
   <body>
-    <a-scene id="escena" background="color: #000000" vr-mode-ui="enabled: false">
-      
+    <a-scene background="color: #000000" vr-mode-ui="enabled: false">
       <a-sky color="#000000"></a-sky>
 
-      <a-entity light="type: ambient; intensity: 0.3"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.4"></a-entity>
       <a-entity light="type: point; intensity: 1; position: 0 10 5"></a-entity>
 
       <a-entity position="0 2 15">
@@ -24,12 +23,9 @@
     </a-scene>
 
     <script>
-      // URL de tu Google Sheet publicada como CSV
       const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRImd_PrZMPLBtYUtJ97nZAhPWeiH3Rttk_SpJv0BQZYEHJh9a4tIX33jGaMg7TtYxzUGeL8jupfvkK/pub?output=csv'; 
-      
       let palabrasProcesadas = new Set();
 
-      // Función para obtener datos de Google Sheets
       async function actualizarEstrellas() {
         try {
           const response = await fetch(SHEET_CSV_URL);
@@ -46,18 +42,17 @@
             }
           });
         } catch (error) {
-          console.error("Error al conectar con el cielo de datos:", error);
+          console.error("Error en la conexión estelar:", error);
         }
       }
 
       function crearEstrella(palabra) {
         const universo = document.querySelector('#universo');
         
-        // Paleta de colores vibrantes para el borde y la estrella
-        const colores = ['#00f2ff', '#ff00ff', '#00ffaa', '#ffcc00', '#0077ff'];
+        // Colores de alta visibilidad
+        const colores = ['#00f2ff', '#ff00ff', '#00ffaa', '#ffcc00', '#ffffff'];
         const colorAzar = colores[Math.floor(Math.random() * colores.length)];
 
-        // Dispersión aleatoria (Ajustada para que no se salgan del marco LED)
         const x = (Math.random() - 0.5) * 45;
         const y = (Math.random() * 18) - 2;
         const z = (Math.random() - 0.5) * 12;
@@ -65,54 +60,50 @@
         const grupo = document.createElement('a-entity');
         grupo.setAttribute('position', `${x} ${y} -90`); 
 
-        // 1. LA ESTRELLA (Esfera con núcleo blanco y halo de color)
+        // 1. Núcleo de la estrella
         const esfera = document.createElement('a-sphere');
-        esfera.setAttribute('radius', '0.2');
-        esfera.setAttribute('color', '#ffffff');
+        esfera.setAttribute('radius', '0.18');
+        esfera.setAttribute('color', '#fff');
         esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 10`);
 
-        // 2. EL TEXTO - CAPA DE BORDE (Da el color y grosor)
+        // 2. BORDE DE COLOR (Brillo difuso detrás)
         const borde = document.createElement('a-text');
         borde.setAttribute('value', palabra);
         borde.setAttribute('align', 'center');
-        borde.setAttribute('position', '0 1.5 -0.05');
-        borde.setAttribute('scale', '11 11 11'); // Ligeramente más grande para el borde
+        borde.setAttribute('position', '0 1.4 -0.05');
+        borde.setAttribute('scale', '11 11 11'); 
         borde.setAttribute('color', colorAzar);
         borde.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
         borde.setAttribute('shader', 'msdf');
         borde.setAttribute('negate', 'false');
-        borde.setAttribute('opacity', '0.9');
+        borde.setAttribute('opacity', '0.8');
 
-        // 3. EL TEXTO - CAPA PRINCIPAL (Blanco puro para legibilidad total)
+        // 3. TEXTO PRINCIPAL (Blanco puro al frente para legibilidad)
         const textoPrincipal = document.createElement('a-text');
         textoPrincipal.setAttribute('value', palabra);
         textoPrincipal.setAttribute('align', 'center');
-        textoPrincipal.setAttribute('position', '0 1.5 0');
+        textoPrincipal.setAttribute('position', '0 1.4 0');
         textoPrincipal.setAttribute('scale', '10 10 10');
         textoPrincipal.setAttribute('color', '#FFFFFF');
         textoPrincipal.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
         textoPrincipal.setAttribute('shader', 'msdf');
         textoPrincipal.setAttribute('negate', 'false');
 
-        // Ensamblaje
         grupo.appendChild(esfera);
         grupo.appendChild(borde);
         grupo.appendChild(textoPrincipal);
         universo.appendChild(grupo);
 
-        // Animación elegante de entrada (viaje desde el fondo)
+        // Animación suave de llegada
         grupo.setAttribute('animation', {
           property: 'position',
           to: `${x} ${y} ${z}`,
-          dur: 10000, // 10 segundos para que sea fácil de leer mientras se mueve
+          dur: 8000,
           easing: 'easeOutExpo'
         });
       }
 
-      // Revisión automática cada 5 segundos
       setInterval(actualizarEstrellas, 5000);
-      
-      // Primera ejecución al cargar
       actualizarEstrellas();
     </script>
   </body>
