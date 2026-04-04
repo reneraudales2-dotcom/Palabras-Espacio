@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Muro de Estrellas - El Espacio</title>
+    <title>Muro de Estrellas - Nebulosa Profunda</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <style>
       body { margin: 0; overflow: hidden; background-color: #000; cursor: grab; }
@@ -11,8 +11,13 @@
   </head>
   <body>
     <a-scene background="color: #000000" vr-mode-ui="enabled: false">
-      <a-sky color="#000000"></a-sky>
-      <a-entity light="type: ambient; intensity: 0.8"></a-entity>
+      <a-assets>
+        <img id="fondo_espacio" src="https://cdn.glitch.global/e8229b46-0b13-43c3-8a35-430c00711915/nebulosa_profunda.jpg?v=1716386623">
+      </a-assets>
+
+      <a-sky src="#fondo_espacio" opacity="0.9"></a-sky>
+      
+      <a-entity light="type: ambient; intensity: 1.0"></a-entity>
       
       <a-entity position="0 2 25">
         <a-camera look-controls="enabled: true; pointerLockEnabled: false" wasd-controls="enabled: true"></a-camera>
@@ -41,31 +46,50 @@
             }
           });
         } catch (error) {
-          console.error("Error en la carga:", error);
+          console.error("Error estelar:", error);
         }
       }
 
       function crearEstrella(palabra) {
         const universo = document.querySelector('#universo');
 
-        const x = (Math.random() - 0.5) * 100;
-        const y = (Math.random() * 40) - 10;
+        // Mayor dispersión para que el fondo se aprecie
+        const x = (Math.random() - 0.5) * 110;
+        const y = (Math.random() * 40) - 5;
         const z = (Math.random() - 0.5) * 60;
 
         const grupo = document.createElement('a-entity');
         grupo.setAttribute('position', `${x} ${y} -150`); 
 
-        // TEXTO: Gris con Borde Blanco
+        // TEXTO: Gris con Borde Blanco Reforzado
         const texto = document.createElement('a-text');
         texto.setAttribute('value', palabra);
         texto.setAttribute('align', 'center');
-        texto.setAttribute('position', '0 0 0');
-        texto.setAttribute('scale', '20 20 20'); // Escala grande para ProPresenter
+        texto.setAttribute('scale', '20 20 20'); 
         
-        // COLOR DE LA LETRA: Gris
-        texto.setAttribute('color', '#888888'); 
+        // COLOR GRIS (Cuerpo de la letra)
+        texto.setAttribute('color', '#999999'); 
         texto.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
         texto.setAttribute('shader', 'msdf');
         texto.setAttribute('negate', 'false');
         
-        //
+        // BORDE BLANCO (Definición contra la nebulosa)
+        texto.setAttribute('outline-width', '0.2'); 
+        texto.setAttribute('outline-color', '#FFFFFF');
+
+        grupo.appendChild(texto);
+        universo.appendChild(grupo);
+
+        grupo.setAttribute('animation', {
+          property: 'position',
+          to: `${x} ${y} ${z}`,
+          dur: 13000, 
+          easing: 'easeOutExpo'
+        });
+      }
+
+      setInterval(actualizarEstrellas, 5000);
+      actualizarEstrellas();
+    </script>
+  </body>
+</html>
