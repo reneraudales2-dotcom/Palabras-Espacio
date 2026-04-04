@@ -12,9 +12,8 @@
     <a-scene background="color: #000000" vr-mode-ui="enabled: false">
       <a-sky color="#000000"></a-sky>
 
-      <a-entity light="type: ambient; intensity: 0.4"></a-entity>
-      <a-entity light="type: point; intensity: 1.2; position: 0 10 5"></a-entity>
-
+      <a-entity light="type: ambient; intensity: 0.3"></a-entity>
+      
       <a-entity position="0 2 15">
         <a-camera look-controls="enabled: false" wasd-controls="enabled: false"></a-camera>
       </a-entity>
@@ -49,7 +48,7 @@
       function crearEstrella(palabra) {
         const universo = document.querySelector('#universo');
         
-        // Colores neón de alto contraste
+        // Colores de alto contraste
         const colores = ['#00f2ff', '#ff00ff', '#00ffaa', '#ffcc00', '#0077ff'];
         const colorAzar = colores[Math.floor(Math.random() * colores.length)];
 
@@ -60,38 +59,37 @@
         const grupo = document.createElement('a-entity');
         grupo.setAttribute('position', `${x} ${y} -90`); 
 
-        // 1. NÚCLEO DE LA ESTRELLA
+        // 1. ESTRELLA (Núcleo)
         const esfera = document.createElement('a-sphere');
-        esfera.setAttribute('radius', '0.18');
+        esfera.setAttribute('radius', '0.15');
         esfera.setAttribute('color', '#fff');
-        esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 10`);
+        esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 8`);
 
-        // 2. CAPA DE COLOR (Borde/Resplandor detrás)
-        const borde = document.createElement('a-text');
-        borde.setAttribute('value', palabra);
-        borde.setAttribute('align', 'center');
-        borde.setAttribute('position', '0 1.4 -0.05');
-        borde.setAttribute('scale', '11 11 11'); // Ligeramente más grande
-        borde.setAttribute('color', colorAzar);
-        borde.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
-        borde.setAttribute('shader', 'msdf');
-        borde.setAttribute('negate', 'false');
-        borde.setAttribute('opacity', '0.8');
+        // 2. CAPA DE COLOR (Sombra/Resplandor)
+        const brillo = document.createElement('a-text');
+        brillo.setAttribute('value', palabra);
+        brillo.setAttribute('align', 'center');
+        brillo.setAttribute('position', '0 1.5 -0.1'); // Separación física para evitar mezcla
+        brillo.setAttribute('scale', '11 11 11'); 
+        brillo.setAttribute('color', colorAzar);
+        brillo.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
+        brillo.setAttribute('shader', 'msdf');
+        brillo.setAttribute('negate', 'false');
 
-        // 3. CAPA BLANCA (Texto frontal para lectura clara)
-        const textoPrincipal = document.createElement('a-text');
-        textoPrincipal.setAttribute('value', palabra);
-        textoPrincipal.setAttribute('align', 'center');
-        textoPrincipal.setAttribute('position', '0 1.4 0');
-        textoPrincipal.setAttribute('scale', '10 10 10');
-        textoPrincipal.setAttribute('color', '#FFFFFF'); // SIEMPRE BLANCO
-        textoPrincipal.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
-        textoPrincipal.setAttribute('shader', 'msdf');
-        textoPrincipal.setAttribute('negate', 'false');
+        // 3. CAPA DE LECTURA (Blanco puro con contorno negro sutil)
+        const texto = document.createElement('a-text');
+        texto.setAttribute('value', palabra);
+        texto.setAttribute('align', 'center');
+        texto.setAttribute('position', '0 1.5 0');
+        texto.setAttribute('scale', '10 10 10');
+        texto.setAttribute('color', '#FFFFFF');
+        texto.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
+        texto.setAttribute('shader', 'msdf');
+        texto.setAttribute('negate', 'false');
 
         grupo.appendChild(esfera);
-        grupo.appendChild(borde);
-        grupo.appendChild(textoPrincipal);
+        grupo.appendChild(brillo);
+        grupo.appendChild(texto);
         universo.appendChild(grupo);
 
         grupo.setAttribute('animation', {
