@@ -5,15 +5,16 @@
     <title>Muro de Estrellas - El Espacio</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <style>
-      body { margin: 0; overflow: hidden; background-color: #000; }
+      body { margin: 0; overflow: hidden; background-color: #000; cursor: grab; }
+      body:active { cursor: grabbing; }
     </style>
   </head>
   <body>
     <a-scene background="color: #000000" vr-mode-ui="enabled: false">
       <a-sky color="#000000"></a-sky>
-      <a-entity light="type: ambient; intensity: 0.3"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.4"></a-entity>
       
-      <a-entity position="0 2 20">
+      <a-entity position="0 2 25">
         <a-camera look-controls="enabled: true" wasd-controls="enabled: true"></a-camera>
       </a-entity>
 
@@ -40,7 +41,7 @@
             }
           });
         } catch (error) {
-          console.error("Error en la conexión estelar:", error);
+          console.error("Error en la conexión:", error);
         }
       }
 
@@ -49,62 +50,55 @@
         const colores = ['#00f2ff', '#ff00ff', '#00ffaa', '#ffcc00', '#0077ff'];
         const colorAzar = colores[Math.floor(Math.random() * colores.length)];
 
-        const x = (Math.random() - 0.5) * 60;
-        const y = (Math.random() * 25) - 5;
-        const z = (Math.random() - 0.5) * 20;
+        const x = (Math.random() - 0.5) * 100;
+        const y = (Math.random() * 40) - 10;
+        const z = (Math.random() - 0.5) * 60;
 
         const grupo = document.createElement('a-entity');
-        grupo.setAttribute('position', `${x} ${y} -100`); 
+        grupo.setAttribute('position', `${x} ${y} -150`); 
 
-        // 1. ESTRELLA
+        // 1. ESTRELLA (Punto de luz)
         const esfera = document.createElement('a-sphere');
-        esfera.setAttribute('radius', '0.15');
-        esfera.setAttribute('color', '#fff');
-        esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 10`);
+        esfera.setAttribute('radius', '0.12');
+        esfera.setAttribute('color', colorAzar);
+        esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 6`);
 
-        // 2. RESPLANDOR DE COLOR (Fondo)
-        const brillo = document.createElement('a-text');
-        brillo.setAttribute('value', palabra);
-        brillo.setAttribute('align', 'center');
-        brillo.setAttribute('position', '0 1.6 -0.15');
-        brillo.setAttribute('scale', '11.5 11.5 11.5'); 
-        brillo.setAttribute('color', colorAzar);
-        brillo.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
-        brillo.setAttribute('shader', 'msdf');
-        brillo.setAttribute('negate', 'false');
-
-        // 3. BORDE NEGRO (Para separar las letras y dar legibilidad)
-        const bordeNegro = document.createElement('a-text');
-        bordeNegro.setAttribute('value', palabra);
-        bordeNegro.setAttribute('align', 'center');
-        bordeNegro.setAttribute('position', '0 1.6 -0.05');
-        bordeNegro.setAttribute('scale', '10.4 10.4 10.4'); // Un poco más grande que el blanco
-        bordeNegro.setAttribute('color', '#000000');
-        bordeNegro.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
-        bordeNegro.setAttribute('shader', 'msdf');
-        bordeNegro.setAttribute('negate', 'false');
-
-        // 4. TEXTO BLANCO (Frente)
+        // 2. TEXTO CON RELLENO NEGRO Y CONTORNO BLANCO
         const texto = document.createElement('a-text');
         texto.setAttribute('value', palabra);
         texto.setAttribute('align', 'center');
-        texto.setAttribute('position', '0 1.6 0');
-        texto.setAttribute('scale', '10 10 10');
-        texto.setAttribute('color', '#FFFFFF');
+        texto.setAttribute('position', '0 2 0');
+        texto.setAttribute('scale', '15 15 15');
+        
+        // --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
+        texto.setAttribute('color', '#000000'); // RELLENO NEGRO (Adentro)
         texto.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
         texto.setAttribute('shader', 'msdf');
         texto.setAttribute('negate', 'false');
+        
+        // Creamos el borde blanco para que la letra se defina
+        texto.setAttribute('outline-width', '0.1'); 
+        texto.setAttribute('outline-color', '#FFFFFF'); // BORDE BLANCO (Afuera)
+
+        // 3. RESPLANDOR DE COLOR (Más atrás para que no ensucie el negro)
+        const glow = document.createElement('a-text');
+        glow.setAttribute('value', palabra);
+        glow.setAttribute('align', 'center');
+        glow.setAttribute('position', '0 2 -0.15');
+        glow.setAttribute('scale', '16 16 16');
+        glow.setAttribute('color', colorAzar);
+        glow.setAttribute('shader', 'msdf');
+        glow.setAttribute('negate', 'false');
 
         grupo.appendChild(esfera);
-        grupo.appendChild(brillo);
-        grupo.appendChild(bordeNegro);
+        grupo.appendChild(glow);
         grupo.appendChild(texto);
         universo.appendChild(grupo);
 
         grupo.setAttribute('animation', {
           property: 'position',
           to: `${x} ${y} ${z}`,
-          dur: 10000,
+          dur: 12000,
           easing: 'easeOutExpo'
         });
       }
