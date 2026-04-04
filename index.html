@@ -56,35 +56,24 @@
         const grupo = document.createElement('a-entity');
         grupo.setAttribute('position', `${x} ${y} -95`); 
 
-        // 1. ESTRELLA (Punto de luz)
+        // 1. ESTRELLA (Núcleo)
         const esfera = document.createElement('a-sphere');
         esfera.setAttribute('radius', '0.15');
         esfera.setAttribute('color', '#fff');
         esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 8`);
 
-        // 2. CAPA DE COLOR (Resplandor muy atrás)
+        // 2. CAPA DE COLOR (Borde/Brillo detrás)
         const brillo = document.createElement('a-text');
         brillo.setAttribute('value', palabra);
         brillo.setAttribute('align', 'center');
-        brillo.setAttribute('position', '0 1.6 -0.2'); // Alejado atrás
-        brillo.setAttribute('scale', '11.5 11.5 11.5'); 
+        brillo.setAttribute('position', '0 1.6 -0.1'); // Separación física
+        brillo.setAttribute('scale', '11 11 11'); 
         brillo.setAttribute('color', colorAzar);
         brillo.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
         brillo.setAttribute('shader', 'msdf');
         brillo.setAttribute('negate', 'false');
 
-        // 3. CAPA DE BLOQUEO (Negra, para dar definición total)
-        const bloqueo = document.createElement('a-text');
-        bloqueo.setAttribute('value', palabra);
-        bloqueo.setAttribute('align', 'center');
-        bloqueo.setAttribute('position', '0 1.6 -0.08'); // Entre el color y el blanco
-        bloqueo.setAttribute('scale', '10.5 10.5 10.5');
-        bloqueo.setAttribute('color', '#000000');
-        bloqueo.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
-        bloqueo.setAttribute('shader', 'msdf');
-        bloqueo.setAttribute('negate', 'false');
-
-        // 4. CAPA DE LECTURA (Blanco al frente)
+        // 3. CAPA BLANCA (Texto principal al frente para lectura)
         const texto = document.createElement('a-text');
         texto.setAttribute('value', palabra);
         texto.setAttribute('align', 'center');
@@ -97,7 +86,6 @@
 
         grupo.appendChild(esfera);
         grupo.appendChild(brillo);
-        grupo.appendChild(bloqueo);
         grupo.appendChild(texto);
         universo.appendChild(grupo);
 
