@@ -4,25 +4,32 @@
     <meta charset="utf-8">
     <title>Muro de Estrellas - El Espacio</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; background-color: #000; }
+    </style>
   </head>
-  <body style="margin: 0; overflow: hidden;">
-    <a-scene>
-      <a-sky color="#000005"></a-sky>
+  <body>
+    <a-scene id="escena" background="color: #000000" vr-mode-ui="enabled: false">
+      
+      <a-sky color="#000000"></a-sky>
 
-      <a-entity light="type: ambient; intensity: 0.8"></a-entity>
-      <a-entity light="type: point; intensity: 1.5; position: 0 10 0"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.3"></a-entity>
+      <a-entity light="type: point; intensity: 1; position: 0 10 5"></a-entity>
 
       <a-entity position="0 2 15">
-        <a-camera look-controls="enabled: true" wasd-controls="enabled: false"></a-camera>
+        <a-camera look-controls="enabled: false" wasd-controls="enabled: false"></a-camera>
       </a-entity>
 
       <a-entity id="universo"></a-entity>
     </a-scene>
 
     <script>
+      // URL de tu Google Sheet publicada como CSV
       const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRImd_PrZMPLBtYUtJ97nZAhPWeiH3Rttk_SpJv0BQZYEHJh9a4tIX33jGaMg7TtYxzUGeL8jupfvkK/pub?output=csv'; 
+      
       let palabrasProcesadas = new Set();
 
+      // Función para obtener datos de Google Sheets
       async function actualizarEstrellas() {
         try {
           const response = await fetch(SHEET_CSV_URL);
@@ -39,64 +46,74 @@
             }
           });
         } catch (error) {
-          console.error("Error al conectar con la base de datos espacial:", error);
+          console.error("Error al conectar con el cielo de datos:", error);
         }
       }
 
-     function crearEstrella(palabra) {
-  const universo = document.querySelector('#universo');
-  
-  // Paleta de colores espaciales de alto contraste
-  const colores = ['#00f2ff', '#ff00ff', '#00ffaa', '#ffcc00', '#ffffff'];
-  const colorAzar = colores[Math.floor(Math.random() * colores.length)];
+      function crearEstrella(palabra) {
+        const universo = document.querySelector('#universo');
+        
+        // Paleta de colores vibrantes para el borde y la estrella
+        const colores = ['#00f2ff', '#ff00ff', '#00ffaa', '#ffcc00', '#0077ff'];
+        const colorAzar = colores[Math.floor(Math.random() * colores.length)];
 
-  const x = (Math.random() - 0.5) * 45;
-  const y = (Math.random() * 18) - 2;
-  const z = (Math.random() - 0.5) * 12;
+        // Dispersión aleatoria (Ajustada para que no se salgan del marco LED)
+        const x = (Math.random() - 0.5) * 45;
+        const y = (Math.random() * 18) - 2;
+        const z = (Math.random() - 0.5) * 12;
 
-  const grupo = document.createElement('a-entity');
-  grupo.setAttribute('position', `${x} ${y} -85`); 
+        const grupo = document.createElement('a-entity');
+        grupo.setAttribute('position', `${x} ${y} -90`); 
 
-  // Esfera con brillo intenso (Emissive)
-  const esfera = document.createElement('a-sphere');
-  esfera.setAttribute('radius', '0.18');
-  esfera.setAttribute('color', '#fff');
-  esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 8`);
+        // 1. LA ESTRELLA (Esfera con núcleo blanco y halo de color)
+        const esfera = document.createElement('a-sphere');
+        esfera.setAttribute('radius', '0.2');
+        esfera.setAttribute('color', '#ffffff');
+        esfera.setAttribute('material', `emissive: ${colorAzar}; emissiveIntensity: 10`);
 
-  // Texto en Alta Definición (MSDF)
-  const texto = document.createElement('a-text');
-  texto.setAttribute('value', palabra);
-  texto.setAttribute('align', 'center');
-  texto.setAttribute('position', '0 1.3 0');
-  texto.setAttribute('scale', '9 9 9'); // Tamaño aumentado para legibilidad
-  texto.setAttribute('color', colorAzar);
-  texto.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
-  texto.setAttribute('shader', 'msdf');
-  texto.setAttribute('negate', 'false');
+        // 2. EL TEXTO - CAPA DE BORDE (Da el color y grosor)
+        const borde = document.createElement('a-text');
+        borde.setAttribute('value', palabra);
+        borde.setAttribute('align', 'center');
+        borde.setAttribute('position', '0 1.5 -0.05');
+        borde.setAttribute('scale', '11 11 11'); // Ligeramente más grande para el borde
+        borde.setAttribute('color', colorAzar);
+        borde.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
+        borde.setAttribute('shader', 'msdf');
+        borde.setAttribute('negate', 'false');
+        borde.setAttribute('opacity', '0.9');
 
-  // Segunda capa de texto para efecto de resplandor (Glow)
-  const resplandor = document.createElement('a-text');
-  resplandor.setAttribute('value', palabra);
-  resplandor.setAttribute('align', 'center');
-  resplandor.setAttribute('position', '0 1.3 -0.02');
-  resplandor.setAttribute('scale', '9.5 9.5 9.5');
-  resplandor.setAttribute('color', colorAzar);
-  resplandor.setAttribute('opacity', '0.3');
+        // 3. EL TEXTO - CAPA PRINCIPAL (Blanco puro para legibilidad total)
+        const textoPrincipal = document.createElement('a-text');
+        textoPrincipal.setAttribute('value', palabra);
+        textoPrincipal.setAttribute('align', 'center');
+        textoPrincipal.setAttribute('position', '0 1.5 0');
+        textoPrincipal.setAttribute('scale', '10 10 10');
+        textoPrincipal.setAttribute('color', '#FFFFFF');
+        textoPrincipal.setAttribute('font', 'https://cdn.aframe.io/fonts/Exo2Bold.fnt');
+        textoPrincipal.setAttribute('shader', 'msdf');
+        textoPrincipal.setAttribute('negate', 'false');
 
-  grupo.appendChild(esfera);
-  grupo.appendChild(texto);
-  grupo.appendChild(resplandor);
-  universo.appendChild(grupo);
+        // Ensamblaje
+        grupo.appendChild(esfera);
+        grupo.appendChild(borde);
+        grupo.appendChild(textoPrincipal);
+        universo.appendChild(grupo);
 
-  // Animación suave de entrada
-  grupo.setAttribute('animation', {
-    property: 'position',
-    to: `${x} ${y} ${z}`,
-    dur: 7500,
-    easing: 'easeOutQuart'
-  });
-}
+        // Animación elegante de entrada (viaje desde el fondo)
+        grupo.setAttribute('animation', {
+          property: 'position',
+          to: `${x} ${y} ${z}`,
+          dur: 10000, // 10 segundos para que sea fácil de leer mientras se mueve
+          easing: 'easeOutExpo'
+        });
+      }
+
+      // Revisión automática cada 5 segundos
       setInterval(actualizarEstrellas, 5000);
+      
+      // Primera ejecución al cargar
+      actualizarEstrellas();
     </script>
   </body>
 </html>
