@@ -15,9 +15,9 @@
         <img id="nebulosa" src="https://cdn.glitch.global/e8229b46-0b13-43c3-8a35-430c00711915/nebulosa_profunda.jpg?v=1716386623" crossorigin="anonymous">
       </a-assets>
 
-      <a-sky src="#nebulosa" rotation="0 -90 0" opacity="0.7"></a-sky>
+      <a-sky src="#nebulosa" rotation="0 -90 0" opacity="0.8"></a-sky>
       
-      <a-entity light="type: ambient; intensity: 1.2"></a-entity>
+      <a-entity light="type: ambient; intensity: 1.0"></a-entity>
       
       <a-entity position="0 2 25">
         <a-camera look-controls="enabled: true; pointerLockEnabled: false" wasd-controls="enabled: true"></a-camera>
@@ -60,16 +60,16 @@
         const grupo = document.createElement('a-entity');
         grupo.setAttribute('position', `${x} ${y} -150`); 
 
-        // TEXTO: Gris Sólido con Contorno Blanco Grueso
-        // --- CAMBIO DE TIPOGRAFÍA ---
-        // Usamos una tipografía neutra y Sans-Serif para máxima legibilidad.
+        // TEXTO: Blanco Sólido con Contorno Negro Grueso
+        // --- CAMBIO DE CONFIGURACIÓN ---
+        // Usamos una sola capa técnica para evitar errores de renderizado.
         const texto = document.createElement('a-text');
         texto.setAttribute('value', palabra);
         texto.setAttribute('align', 'center');
-        texto.setAttribute('scale', '24 24 24'); // Un poco más grande para ProPresenter
+        texto.setAttribute('scale', '24 24 24'); // Escala grande para ProPresenter
         
-        // Gris más "pesado" para que no se trasluzca la nebulosa
-        texto.setAttribute('color', '#A0A0A0'); 
+        // INTERIOR: Blanco Puro
+        texto.setAttribute('color', '#FFFFFF'); 
         
         // Tipografía NEUTRA Y LIMPIA (Similar a Helvetica o Roboto)
         texto.setAttribute('font', 'https://cdn.aframe.io/fonts/Roboto.fnt');
@@ -77,9 +77,10 @@
         texto.setAttribute('shader', 'msdf');
         texto.setAttribute('negate', 'false');
         
-        // Borde blanco reforzado para legibilidad extrema
-        texto.setAttribute('outline-width', '0.22'); 
-        texto.setAttribute('outline-color', '#FFFFFF');
+        // BORDE: Negro Grueso
+        // Subí el grosor a 0.25 para que el negro defina la forma.
+        texto.setAttribute('outline-width', '0.25'); 
+        texto.setAttribute('outline-color', '#000000');
 
         grupo.appendChild(texto);
         universo.appendChild(grupo);
