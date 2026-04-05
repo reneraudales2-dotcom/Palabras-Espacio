@@ -2,24 +2,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Muro de Estrellas - Espacio Profundo</title>
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <title>Muro de Estrellas - Fix Final</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <style>
-      /* Fondo negro profundo para que los colores neón resalten */
-      body { margin: 0; overflow: hidden; background-color: #000; cursor: grab; }
-      body:active { cursor: grabbing; }
+      body { margin: 0; overflow: hidden; background-color: #000; }
     </style>
   </head>
   <body>
-    <a-scene background="color: #000000" vr-mode-ui="enabled: false">
+    <a-scene background="color: #050505" vr-mode-ui="enabled: false" renderer="precision: high;">
       
-      <a-assets timeout="10000">
-        <img id="fondo_nebulosa" src="https://cdn.glitch.global/e8229b46-0b13-43c3-8a35-430c00711915/nebulosa_profunda.jpg?v=1716386623" crossorigin="anonymous">
+      <a-assets>
+        <img id="sky" src="https://cdn.glitch.global/e8229b46-0b13-43c3-8a35-430c00711915/nebulosa_profunda.jpg?v=1716386623" crossorigin="anonymous">
       </a-assets>
 
-      <a-sky src="#fondo_nebulosa" rotation="0 -90 0" opacity="0.6"></a-sky>
+      <a-sky src="#sky" material="shader: flat; opacity: 0.5; color: #111;" rotation="0 -90 0"></a-sky>
       
-      <a-entity light="type: ambient; intensity: 1.8"></a-entity>
+      <a-entity light="type: ambient; intensity: 1.5"></a-entity>
       
       <a-entity position="0 2 25">
         <a-camera look-controls="enabled: true" wasd-controls="enabled: true"></a-camera>
@@ -29,7 +27,6 @@
     </a-scene>
 
     <script>
-      // *** TODA ESTA SECCIÓN NO SE HA MODIFICADO ***
       const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/PACX-1vRImd_PrZMPLBtYUtJ97nZAhPWeiH3Rttk_SpJv0BQZYEHJh9a4tIX33jGaMg7TtYxzUGeL8jupfvkK/pub?output=csv'; 
       let palabrasProcesadas = new Set();
 
@@ -49,7 +46,7 @@
             }
           });
         } catch (error) {
-          console.error("Error de conexión:", error);
+          console.error("Error Sheet:", error);
         }
       }
 
