@@ -15,9 +15,9 @@
         <img id="nebulosa" src="https://cdn.glitch.global/e8229b46-0b13-43c3-8a35-430c00711915/nebulosa_profunda.jpg?v=1716386623" crossorigin="anonymous">
       </a-assets>
 
-      <a-sky src="#nebulosa" rotation="0 -90 0" opacity="0.8"></a-sky>
+      <a-sky src="#nebulosa" rotation="0 -90 0" opacity="0.65"></a-sky>
       
-      <a-entity light="type: ambient; intensity: 1.0"></a-entity>
+      <a-entity light="type: ambient; intensity: 1.2"></a-entity>
       
       <a-entity position="0 2 25">
         <a-camera look-controls="enabled: true; pointerLockEnabled: false" wasd-controls="enabled: true"></a-camera>
@@ -46,40 +46,33 @@
             }
           });
         } catch (error) {
-          console.error("Error en la galaxia:", error);
+          console.error("Error galáctico:", error);
         }
       }
 
       function crearEstrella(palabra) {
         const universo = document.querySelector('#universo');
 
-        const x = (Math.random() - 0.5) * 115;
-        const y = (Math.random() * 40) - 5;
-        const z = (Math.random() - 0.5) * 60;
+        const x = (Math.random() - 0.5) * 120;
+        const y = (Math.random() * 45) - 5;
+        const z = (Math.random() - 0.5) * 70;
 
         const grupo = document.createElement('a-entity');
         grupo.setAttribute('position', `${x} ${y} -150`); 
 
-        // TEXTO: Blanco Sólido con Contorno Negro Grueso
-        // --- CAMBIO DE CONFIGURACIÓN ---
-        // Usamos una sola capa técnica para evitar errores de renderizado.
         const texto = document.createElement('a-text');
         texto.setAttribute('value', palabra);
         texto.setAttribute('align', 'center');
-        texto.setAttribute('scale', '24 24 24'); // Escala grande para ProPresenter
+        texto.setAttribute('scale', '25 25 25'); 
         
-        // INTERIOR: Blanco Puro
+        // Letra Blanca Sólida
         texto.setAttribute('color', '#FFFFFF'); 
-        
-        // Tipografía NEUTRA Y LIMPIA (Similar a Helvetica o Roboto)
         texto.setAttribute('font', 'https://cdn.aframe.io/fonts/Roboto.fnt');
-        
         texto.setAttribute('shader', 'msdf');
         texto.setAttribute('negate', 'false');
         
-        // BORDE: Negro Grueso
-        // Subí el grosor a 0.25 para que el negro defina la forma.
-        texto.setAttribute('outline-width', '0.25'); 
+        // Contorno Negro de Seguridad (Aumentado a 0.3 para máxima definición)
+        texto.setAttribute('outline-width', '0.3'); 
         texto.setAttribute('outline-color', '#000000');
 
         grupo.appendChild(texto);
@@ -88,8 +81,8 @@
         grupo.setAttribute('animation', {
           property: 'position',
           to: `${x} ${y} ${z}`,
-          dur: 14000, 
-          easing: 'easeOutExpo'
+          dur: 15000, 
+          easing: 'easeOutQuad'
         });
       }
 
