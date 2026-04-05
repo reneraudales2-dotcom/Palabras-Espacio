@@ -2,9 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Muro de Estrellas - Versión Estándar</title>
+    <title>Muro de Estrellas Coloreado</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <style>
+      /* Fondo negro profundo para que los colores neón resalten */
       body { margin: 0; overflow: hidden; background-color: #000; cursor: grab; }
       body:active { cursor: grabbing; }
     </style>
@@ -14,17 +15,17 @@
       
       <a-sky color="#000000" src="https://cdn.glitch.global/e8229b46-0b13-43c3-8a35-430c00711915/nebulosa_profunda.jpg?v=1716386623" opacity="0.6" rotation="0 -90 0"></a-sky>
       
-      <a-entity light="type: ambient; intensity: 1.5"></a-entity>
+      <a-entity light="type: ambient; intensity: 1.8"></a-entity>
       
       <a-entity position="0 2 25">
-        <a-camera look-controls="enabled: true; pointerLockEnabled: false" wasd-controls="enabled: true"></a-camera>
+        <a-camera look-controls="enabled: true" wasd-controls="enabled: true"></a-camera>
       </a-entity>
 
       <a-entity id="universo"></a-entity>
     </a-scene>
 
     <script>
-      const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRImd_PrZMPLBtYUtJ97nZAhPWeiH3Rttk_SpJv0BQZYEHJh9a4tIX33jGaMg7TtYxzUGeL8jupfvkK/pub?output=csv'; 
+      const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/ PACX-1vRImd_PrZMPLBtYUtJ97nZAhPWeiH3Rttk_SpJv0BQZYEHJh9a4tIX33jGaMg7TtYxzUGeL8jupfvkK/pub?output=csv'; 
       let palabrasProcesadas = new Set();
 
       async function actualizarEstrellas() {
@@ -35,10 +36,12 @@
 
           filas.forEach(fila => {
             const columnas = fila.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            // Tomamos la palabra de la columna B, la limpiamos y pasamos a mayúsculas
             const palabra = columnas[1]?.replace(/"/g, '').trim().toUpperCase(); 
 
+            // Si hay palabra y no la hemos creado, la creamos con color al azar
             if (palabra && !palabrasProcesadas.has(palabra)) {
-              crearEstrella(palabra);
+              crearEstrellaColoreada(palabra);
               palabrasProcesadas.add(palabra);
             }
           });
@@ -47,46 +50,62 @@
         }
       }
 
-      function crearEstrella(palabra) {
+      function crearEstrellaColoreada(palabra) {
         const universo = document.querySelector('#universo');
         if (!universo) return;
 
-        const x = (Math.random() - 0.5) * 120;
-        const y = (Math.random() * 45) - 5;
-        const z = (Math.random() - 0.5) * 70;
+        // --- LÓGICA DE COLOR AL AZAR (Colores Neón) ---
+        // Lista de colores vibrantes para que las letras resalten
+        const coloresNeon = ['#00f2ff', '#ff00ff', '#00ffaa', '#ffcc00', '#0077ff', '#ff3300', '#ccff00'];
+        // Seleccionamos uno de la lista al azar
+        const colorAzar = coloresNeon[Math.floor(Math.random() * coloresNeon.length)];
+
+        // Posición aleatoria en el espacio
+        const x = (Math.random() - 0.5) * 120; // Dispersión horizontal
+        const y = (Math.random() * 45) - 5;   // Dispersión vertical
+        const z = (Math.random() - 0.5) * 70;  // Dispersión en profundidad
 
         const grupo = document.createElement('a-entity');
+        // Empieza lejos (-150) y se acerca (animation)
         grupo.setAttribute('position', `${x} ${y} -150`); 
 
-        // Letras: Blanco con contorno negro (Máxima legibilidad)
+        // --- EL TEXTO: Letras de color Neón ---
         const texto = document.createElement('a-text');
         texto.setAttribute('value', palabra);
         texto.setAttribute('align', 'center');
-        texto.setAttribute('scale', '25 25 25'); 
-        texto.setAttribute('color', '#FFFFFF'); 
+        texto.setAttribute('scale', '28 28 28'); // Escala grande para ProPresenter
         
-        // Usamos la fuente interna de A-Frame para evitar bloqueos de carga externa
+        // Usamos la fuente interna 'roboto' que es la más legible y compatible
         texto.setAttribute('font', 'roboto'); 
         texto.setAttribute('shader', 'msdf');
-        texto.setAttribute('negate', 'false');
         
-        // Contorno negro para separar de la nebulosa
-        texto.setAttribute('outline-width', '0.25'); 
+        // --- AQUÍ ESTÁ EL CAMBIO CLAVE SOLICITADO ---
+        // Negate: false invierte la lógica. 
+        // El fondo del bloque de texto se vuelve Negro (Invisible contra el espacio)
+        // Y el color de la letra se vuelve el color que elegimos al azar.
+        texto.setAttribute('negate', 'false');
+        texto.setAttribute('color', colorAzar); // Las LETRAS toman el color neón al azar
+
+        // Opcional: Añadimos un pequeño borde negro para mayor definición
+        texto.setAttribute('outline-width', '0.1'); 
         texto.setAttribute('outline-color', '#000000');
 
+        // Ensamblado
         grupo.appendChild(texto);
         universo.appendChild(grupo);
 
+        // Animación de acercamiento suave
         grupo.setAttribute('animation', {
           property: 'position',
           to: `${x} ${y} ${z}`,
-          dur: 15000, 
+          dur: 15000, // Tarda 15 segundos en llegar
           easing: 'easeOutQuad'
         });
       }
 
+      // Intervalo de actualización cada 5 segundos
       setInterval(actualizarEstrellas, 5000);
-      actualizarEstrellas();
+      actualizarEstrellas(); // Ejecutar una vez al inicio
     </script>
   </body>
 </html>
