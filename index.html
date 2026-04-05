@@ -2,22 +2,24 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Muro de Estrellas - Nebulosa</title>
+    <title>Muro de Estrellas - Seguro</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <style>
       body { margin: 0; overflow: hidden; background-color: #000; cursor: grab; }
       body:active { cursor: grabbing; }
+      /* Evitamos que el lienzo sea invisible antes de cargar */
+      a-scene { display: block; width: 100%; height: 100vh; }
     </style>
   </head>
   <body>
-    <a-scene background="color: #000000" vr-mode-ui="enabled: false">
-      <a-assets>
+    <a-scene background="color: #000000" vr-mode-ui="enabled: false" renderer="antialias: true; colorManagement: true;">
+      <a-assets timeout="10000">
         <img id="nebulosa" src="https://cdn.glitch.global/e8229b46-0b13-43c3-8a35-430c00711915/nebulosa_profunda.jpg?v=1716386623" crossorigin="anonymous">
       </a-assets>
 
-      <a-sky src="#nebulosa" rotation="0 -90 0" opacity="0.65"></a-sky>
+      <a-sky src="#nebulosa" rotation="0 -90 0" opacity="0.7" material="shader: flat"></a-sky>
       
-      <a-entity light="type: ambient; intensity: 1.2"></a-entity>
+      <a-entity light="type: ambient; intensity: 1.5"></a-entity>
       
       <a-entity position="0 2 25">
         <a-camera look-controls="enabled: true; pointerLockEnabled: false" wasd-controls="enabled: true"></a-camera>
@@ -33,6 +35,7 @@
       async function actualizarEstrellas() {
         try {
           const response = await fetch(SHEET_CSV_URL);
+          if (!response.ok) throw new Error('Error al conectar con Google Sheets');
           const data = await response.text();
           const filas = data.split('\n').slice(1).filter(f => f.trim() !== ""); 
 
@@ -46,16 +49,17 @@
             }
           });
         } catch (error) {
-          console.error("Error galáctico:", error);
+          console.error("Error técnico:", error);
         }
       }
 
       function crearEstrella(palabra) {
         const universo = document.querySelector('#universo');
+        if (!universo) return;
 
-        const x = (Math.random() - 0.5) * 120;
-        const y = (Math.random() * 45) - 5;
-        const z = (Math.random() - 0.5) * 70;
+        const x = (Math.random() - 0.5) * 130;
+        const y = (Math.random() * 50) - 10;
+        const z = (Math.random() - 0.5) * 80;
 
         const grupo = document.createElement('a-entity');
         grupo.setAttribute('position', `${x} ${y} -150`); 
@@ -63,16 +67,14 @@
         const texto = document.createElement('a-text');
         texto.setAttribute('value', palabra);
         texto.setAttribute('align', 'center');
-        texto.setAttribute('scale', '25 25 25'); 
+        texto.setAttribute('scale', '28 28 28'); 
         
-        // Letra Blanca Sólida
+        // Configuración de Máxima Legibilidad: Blanco con Borde Negro
         texto.setAttribute('color', '#FFFFFF'); 
         texto.setAttribute('font', 'https://cdn.aframe.io/fonts/Roboto.fnt');
         texto.setAttribute('shader', 'msdf');
         texto.setAttribute('negate', 'false');
-        
-        // Contorno Negro de Seguridad (Aumentado a 0.3 para máxima definición)
-        texto.setAttribute('outline-width', '0.3'); 
+        texto.setAttribute('outline-width', '0.35'); 
         texto.setAttribute('outline-color', '#000000');
 
         grupo.appendChild(texto);
